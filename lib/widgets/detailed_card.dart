@@ -13,14 +13,19 @@ class DetailedCard extends StatelessWidget {
       required this.source});
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Text(title),
-          Text(source),
-          Image.network(img),
-          Text(description)
-        ],
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.network(img),
+            Text(title,style: const TextStyle(
+                              fontSize: 20,
+                              color: Color(0XFFf2f2f2),
+                              fontFamily: 'Roboto Slab')),
+            Text(source),
+            Text(description)
+          ],
+        ),
       ),
     );
   }

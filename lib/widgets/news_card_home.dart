@@ -5,18 +5,15 @@ import '../widgets/news_card.dart';
 import '../provider/news.dart';
 import '../screens/detailed_screen.dart';
 
-class NewsCardView extends StatefulWidget {
-  final String category;
-  const NewsCardView(this.category);
+class NewsCardHome extends StatefulWidget {
+  const NewsCardHome({super.key});
 
   @override
-  State<NewsCardView> createState() => _NewsCardViewState(category);
+  State<NewsCardHome> createState() => _NewsCardHomeState();
 }
 
-class _NewsCardViewState extends State<NewsCardView> {
+class _NewsCardHomeState extends State<NewsCardHome> {
   bool _loading = true;
-  final String category;
-  _NewsCardViewState(this.category);
   @override
   void didChangeDependencies() {
     _onLoading();
@@ -25,7 +22,7 @@ class _NewsCardViewState extends State<NewsCardView> {
 
   void _onLoading() async {
     try {
-      await Provider.of<News>(context,listen: false).fetchAndSet(category);
+      await Provider.of<News>(context,listen: false).fetchAndSet("");
       setState(() {
         _loading = false;
       });
@@ -54,11 +51,11 @@ class _NewsCardViewState extends State<NewsCardView> {
                               arguments: news.articles[idx].id);
                         },
                         child: NewsCard(
-                            imgUrl: news.articles[idx].imgUrl!,
-                            headline: news.articles[idx].headline!,
-                            source: news.articles[idx].source!,
+                            imgUrl: news.articlesHome[idx].imgUrl!,
+                            headline: news.articlesHome[idx].headline!,
+                            source: news.articlesHome[idx].source!,
                             dateTime: DateFormat('yyyy-MM-dd')
-                                .format(news.articles[idx].dateTime!)),
+                                .format(news.articlesHome[idx].dateTime!)),
                       ),
                       const SizedBox(
                         height: 20,
@@ -66,7 +63,7 @@ class _NewsCardViewState extends State<NewsCardView> {
                     ],
                   );
                 },
-                itemCount: news.articles.length,
+                itemCount: news.articlesHome.length,
               );
       }),
     );

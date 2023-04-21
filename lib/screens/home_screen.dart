@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/widgets/news_card_home.dart';
 import 'package:news_app/widgets/news_card_view.dart';
 import 'package:provider/provider.dart';
 import 'package:country_list_pick/country_list_pick.dart';
@@ -15,9 +16,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // @override
   // void didChangeDependencies() {
-  //   Provider.of<News>(context, listen: false).fetchAndSet("sports");
+  //   Provider.of<News>(context).fetchAndSet("");
   //   super.didChangeDependencies();
   // }
+
   late TabController _tabController;
   dynamic country;
   dynamic cName;
@@ -32,29 +34,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return DefaultTabController(
       length: 8,
       child: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              SearchBar(),
-              ExpansionTile(
-                title: const Text('Country'),
-                children: <Widget>[
-                  for (int i = 0; i < listOfCountry.length; i++)
-                    ListTile(
-                      onTap: () {
-                        country = listOfCountry[i]['code'];
-                        cName = listOfCountry[i]['name']!.toUpperCase();
-                        Provider.of<News>(context).fetchAndSet(country: country,"");
-                      },
-                      title: Text(listOfCountry[i]['name']!.toUpperCase()),
-                    ),
-                ],
-              ),
-            ],
+          drawer: Drawer(
+            child: ListView(
+              children: [
+                SearchBar(),
+                ExpansionTile(
+                  title: const Text('Country'),
+                  children: <Widget>[
+                    for (int i = 0; i < listOfCountry.length; i++)
+                      ListTile(
+                        onTap: () async {
+                          country = listOfCountry[i]['code'];
+                          cName = listOfCountry[i]['name']!.toUpperCase();
+                         await Provider.of<News>(context,listen: false)
+                              .changeCountry(country);
+                          await Provider.of<News>(context,listen: false)
+                              .fetchAndSet("");
+                        },
+                        title: Text(listOfCountry[i]['name']!.toUpperCase()),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
           appBar: AppBar(
-            title:const Text("NEWS"),
+            title: const Text("NEWS"),
             centerTitle: true,
             backgroundColor: Colors.black,
           ),
@@ -74,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   unselectedLabelColor: Colors.white,
                   tabs: const [
                     Tab(
-                      text: 'Headlines',
+                      text: 'Home',
                     ),
                     Tab(
                       text: 'Entertainment',
@@ -103,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const Expanded(
                   child: TabBarView(
                 children: [
-                  NewsCardView(""),
+                  NewsCardHome(),
                   NewsCardView("Entertainment"),
                   NewsCardView('Sports'),
                   NewsCardView('Music'),
@@ -118,4 +123,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

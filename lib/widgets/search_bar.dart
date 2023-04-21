@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../provider/news.dart';
 
 class SearchBar extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -21,8 +23,9 @@ class SearchBar extends StatelessWidget {
         // Add a search icon or button to the search bar
         prefixIcon: IconButton(
           icon: Icon(Icons.search,color: Colors.black,),
-          onPressed: () {
-            // Perform the search here
+          onPressed: () async{
+            await Provider.of<News>(context,listen: false).changeQuery(_searchController.toString());
+            await Provider.of<News>(context,listen: false).fetchAndSetQuery(_searchController.toString());
           },
         ),
       ),
