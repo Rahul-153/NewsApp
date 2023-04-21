@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './screens/home_screen.dart';
+import './screens/detailed_screen.dart';
 import './provider/news.dart';
 
 
@@ -30,8 +31,13 @@ class MyApp extends StatelessWidget {
           )
         ),
       ),
-      home: HomeScreen(),
-    ));
+      initialRoute: '/',
+      routes: {
+    // When navigating to the "/" route, build the FirstScreen widget.
+    '/': (context) => HomeScreen(),
+    // When navigating to the "/second" route, build the SecondScreen widget.
+    DetailedScreen.routeName: (context) => DetailedScreen(),
+  },    ));
   }
 }
 

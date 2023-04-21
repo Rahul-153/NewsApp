@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/widgets/news_card_view.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import '../widgets/news_card.dart';
+import 'package:country_list_pick/country_list_pick.dart';
+import '../widgets/search_bar.dart';
 import '../provider/news.dart';
+import '../provider/list_of_countries.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,44 +13,109 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // @override
+  // void didChangeDependencies() {
+  //   Provider.of<News>(context, listen: false).fetchAndSet("sports");
+  //   super.didChangeDependencies();
+  // }
+  late TabController _tabController;
+  dynamic country;
+  dynamic cName;
   @override
-  void didChangeDependencies() {
-    Provider.of<News>(context,listen: false).fetchAndSet();
-    super.didChangeDependencies();
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return DefaultTabController(
+      length: 8,
       child: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              SearchBar(),
+              ExpansionTile(
+                title: const Text('Country'),
+                children: <Widget>[
+                  for (int i = 0; i < listOfCountry.length; i++)
+                    ListTile(
+                      onTap: () {
+                        country = listOfCountry[i]['code'];
+                        cName = listOfCountry[i]['name']!.toUpperCase();
+                        Provider.of<News>(context).fetchAndSet(country: country,"");
+                      },
+                      title: Text(listOfCountry[i]['name']!.toUpperCase()),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
           appBar: AppBar(
-            title: Text(
-              "HEADLINES",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            title:const Text("NEWS"),
             centerTitle: true,
             backgroundColor: Colors.black,
           ),
-          body: Container(
-            padding: EdgeInsets.only(top: 10),
-            color: Color(0xFF464646),
-            child: Consumer<News>(builder: (_, news, __) { 
-              return ListView.builder(
-                itemBuilder: (ctx, idx) {
-                  return Column(
-                    children: [
-                      NewsCard(
-                          imgUrl: news.articles[idx].imgUrl!,
-                          headline: news.articles[idx].headline!,
-                          source: news.articles[idx].source!,
-                          dateTime: DateFormat('yyyy-MM-dd').format(news.articles[idx].dateTime!)),
-                          const SizedBox(height: 20,)
-                    ],
-                  );
-                },
-                itemCount: news.articles.length,
-              );
-            }),
+          body: Column(
+            children: [
+              Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: TabBar(
+                  isScrollable: true,
+                  indicator: BoxDecoration(
+                    color: Colors.green[300],
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white,
+                  tabs: const [
+                    Tab(
+                      text: 'Headlines',
+                    ),
+                    Tab(
+                      text: 'Entertainment',
+                    ),
+                    Tab(
+                      text: 'Sports',
+                    ),
+                    Tab(
+                      text: 'Music',
+                    ),
+                    Tab(
+                      text: 'Business',
+                    ),
+                    Tab(
+                      text: 'Health',
+                    ),
+                    Tab(
+                      text: 'Politics',
+                    ),
+                    Tab(
+                      text: 'Science',
+                    ),
+                  ],
+                ),
+              ),
+              const Expanded(
+                  child: TabBarView(
+                children: [
+                  NewsCardView(""),
+                  NewsCardView("Entertainment"),
+                  NewsCardView('Sports'),
+                  NewsCardView('Music'),
+                  NewsCardView('Business'),
+                  NewsCardView('Health'),
+                  NewsCardView('Politics'),
+                  NewsCardView('Science'),
+                ],
+              ))
+            ],
           )),
     );
   }
 }
+
